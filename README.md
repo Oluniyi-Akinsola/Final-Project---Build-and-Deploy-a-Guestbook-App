@@ -10,3 +10,24 @@ Guestbook is a simple web application that we will build and deploy with Docker 
 Clone the git repository that contains the artifacts needed for this lab
 [ ! -d 'guestbook' ] && git clone https://github.com/ibm-developer-skills-network/guestbook
 
+# Build the guestbook app
+To begin, we will build and deploy the web front end for the guestbook app
+Complete the Dockerfile with the necessary Docker commands to build and push your image
+# Dockerfile
+FROM golang:1.15 as builder
+RUN go get github.com/codegangsta/negroni
+RUN go get github.com/gorilla/mux github.com/xyproto/simpleredis/v2
+COPY main.go .
+RUN go build main.go
+
+FROM ubuntu:18.04
+
+COPY --from=builder /go//main /app/guestbook
+COPY public/index.html /app/public/index.html
+COPY public/script.js /app/public/script.js
+COPY public/style.css /app/public/style.css
+COPY public/jquery.min.js /app/public/jquery.min.js
+
+WORKDIR /app
+CMD ["./guestbook"]
+EXPOSE 3000
