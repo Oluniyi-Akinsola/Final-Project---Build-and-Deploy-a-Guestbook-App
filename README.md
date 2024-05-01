@@ -14,20 +14,20 @@ Clone the git repository that contains the artifacts needed for this lab
 To begin, we will build and deploy the web front end for the guestbook app
 Complete the Dockerfile with the necessary Docker commands to build and push your image
 # Dockerfile
-FROM golang:1.15 as builder
-RUN go get github.com/codegangsta/negroni
-RUN go get github.com/gorilla/mux github.com/xyproto/simpleredis/v2
-COPY main.go .
-RUN go build main.go
+ FROM golang:1.15 as builder
+ RUN go get github.com/codegangsta/negroni
+ RUN go get github.com/gorilla/mux github.com/xyproto/simpleredis
+ COPY main.go .
+ RUN go build main.go
 
-FROM ubuntu:18.04
+ FROM ubuntu:18.04
 
-COPY --from=builder /go//main /app/guestbook
-COPY public/index.html /app/public/index.html
-COPY public/script.js /app/public/script.js
-COPY public/style.css /app/public/style.css
-COPY public/jquery.min.js /app/public/jquery.min.js
+ COPY --from=builder /go//main /app/guestbook
+ COPY public/index.html /app/public/index.html
+ COPY public/script.js /app/public/script.js
+ COPY public/style.css /app/public/style.css
+ COPY public/jquery.min.js /app/public/jquery.min.js
 
-WORKDIR /app
-CMD ["./guestbook"]
-EXPOSE 3000
+ WORKDIR /app
+ CMD ["./guestbook"]
+ EXPOSE 3000
